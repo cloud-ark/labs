@@ -1,0 +1,15 @@
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: customer5
+  name: customer5
+spec:
+  ports:
+    - 
+      protocol: TCP
+      port: 5432
+  selector:
+    app: customer5
+  type: NodePort

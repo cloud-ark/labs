@@ -1,0 +1,41 @@
+Pre-requisite step:
+-------------------
+Postgres client needs to be installed on the machine from which following steps would be run
+- brew install postgresql
+- sudo apt-get install postgresql-client
+
+
+Conceptual Steps:
+------------------
+For each customer:
+- Edit the Dockerfile to include customer-specific details such as username, password, database name.
+- Build Docker container image from the Dockerfile
+- Push the container image to a Docker registry (GCR, Quay.io, etc.)
+- Modify deployment yaml to refer to the pushed container image
+- Create Kubernetes deployment and expose it through a service
+
+
+Actual steps (Minikube):
+------------------------
+0) eval $(minikube docker-env)
+   - This is required so that locally built docker images can be deployed on Minikube
+     without requiring them to be pushed to some Docker registry.
+1) Edit Dockerfile
+2) docker build -t <some-name> .
+3) kubectl run <some-name> --port=5432 --image=<some-name> --image-pull-policy=Never
+4) kubectl expose deployment <some-name> --type=NodePort
+   - At this point customer specific database should be created
+
+Verify:
+5) minikube service <some-name> --url
+   - Get the IP address and port
+6) psql -h <IP> -p <port> -U <username> -d <db-name>
+   - When prompted for password, enter <password>
+   - IP: Minikube IP
+   - port: Port of the exposed Service
+   - username: Value of POSTGRES_USER defined in the Dockerfile
+   - db-name: Value of POSTGRES_DB defined in the Dockerfile
+   - password: Value of POSTGRES_PASSWORD defined in the Dockerfile
+
+
+

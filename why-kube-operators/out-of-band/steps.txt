@@ -1,0 +1,40 @@
+Pre-requisite step:
+-------------------
+Postgres client needs to be installed on the machine from which following steps would be run
+- brew install postgresql
+- sudo apt-get install postgresql-client
+
+
+Conceptual Steps:
+------------------
+For each customer:
+- Update deployment.yaml and service.yaml to include customer-specific details
+- Create the create-db.sql file with customer specific details (username, password, database name)
+- Create Postgres Deployment and expose it through a Service
+- Setup Postgres with customer database by executing following command:
+  - export PGPASSWORD=mysecretpassword; psql -h 192.168.99.100 -p 31934 -U postgres -f create-db.sql
+    -- U: default Postgres user 'postgres'
+    -- PGPASSWORD: The password specified when creating Postgres Deployment (in deployment.yaml)
+    -- h: The Service's IP address parsed from the output of 'kubectl service get'. 
+          For Minikube this is the IP of the Minikube VM.
+    -- p: The Service's Port parsed from the output of 'kubectl service get' 
+    -- f: Name of the file containing PSQL commands (create-db.sql)
+
+Actual steps (Minikube):
+-------------------------
+1) Edit deployment.yaml and service.yaml; Create/Update create-db.sql file
+2) kubectl create -f deployment.yaml
+3) kubectl create -f service.yaml
+   - Parse service name from the output. The service name is also available in service.yaml (metadata.name)
+4) minikube service <service name> --url
+   - Parse VM IP and Service Port from the URL
+5) export PGPASSWORD=mysecretpassword; psql -h <Service IP> -p <Service Port> -U postgres -f create-db.sql
+
+Verify:
+6) psql -h <IP> -p <port> -U <username> -d <db-name>
+   - When prompted for password, enter <password>
+   - IP: Minikube IP
+   - port: Port of the exposed Service
+   - username: Name of the user from create-db.sql
+   - db-name: Name of the database from create-db.sql
+   - password: Value of password from create-db.sql

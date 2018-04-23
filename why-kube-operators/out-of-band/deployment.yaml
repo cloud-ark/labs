@@ -1,0 +1,25 @@
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  labels: 
+    app: customer5
+  name: customer5
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer5
+  template: 
+    metadata: 
+      labels: 
+        app: customer5
+    spec: 
+      containers: 
+        - 
+          env: 
+            - 
+              name: POSTGRES_PASSWORD
+              value: mysecretpassword
+          image: "postgres:9.3"
+          name: customer5-postgres
