@@ -32,8 +32,8 @@ Below we present five possible approaches towards addressing the Postgres setup 
 
    Disadvantages:
    - A custom container needs to be built for each customer.
-   - Separate automation needs to be written for performing database actions later (such as modify user password,
-     add new users, add new databases, etc.). This automation consists of 
+   - Separate automation needs to be written for performing database actions later (such as modify
+     user password, add new users, add new databases, etc.). This automation consists of 
      remotely connecting to the running container (its Service/Deployment), and performing
      the required actions.
 
@@ -52,18 +52,18 @@ Below we present five possible approaches towards addressing the Postgres setup 
 
    Disadvantages:
    - Custom container still needs to be built.
-   - Separate automation needs to be written for performing database actions later (such as modify user password,
-     add new users, add new databases, etc.). This automation consists of 
+   - Separate automation needs to be written for performing database actions later (such as modify
+     user password, add new users, add new databases, etc.). This automation consists of 
      remotely connecting to the running container (its Service/Deployment), and performing
      the required actions.
 
 
 3) Out-of-band orchestration:
    ---------------------------
-   This approach consists of creating a Postgres Deployment/StatefulSet using a standard Postgres image.
-   The deployment is exposed through a Kubernetes Service.
-   Once the Service is READY, a script is run against this Service IP remotely which initializes the
-   Postgres instance.
+   This approach consists of creating a Postgres Deployment/StatefulSet using a standard Postgres
+   image. The deployment is exposed through a Kubernetes Service.
+   Once the Service is READY, a script is run against this Service IP remotely which initializes
+   the Postgres instance.
 
    See out-of-band directory for details.
 
@@ -97,8 +97,8 @@ Below we present five possible approaches towards addressing the Postgres setup 
    Advantages (of [1]):
    - Declarative inputs - Required databases and users are specified declaratively
      in the Spec of the CRD.
-   - Tables and data initialization - The CRD Spec supports ability to specify initialization commands
-     such as creating and populating tables with required data.
+   - Tables and data initialization - The CRD Spec supports ability to specify initialization
+     commands such as creating and populating tables with required data.
    - Declarative Updates - Performing updates to a Postgres instance is straightforward. 
      Updating a instance amounts to updating the required declarative attributes
      in the CRD YAML with new data and then re-applying it using kubectl.
