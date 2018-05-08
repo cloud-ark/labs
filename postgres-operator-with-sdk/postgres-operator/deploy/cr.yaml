@@ -1,0 +1,4 @@
+apiVersion: "postgres.test.com/v1alpha1"
+kind: "Postgres"
+metadata:
+  name: "example"
