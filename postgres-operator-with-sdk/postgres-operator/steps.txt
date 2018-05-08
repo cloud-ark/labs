@@ -1,0 +1,3 @@
+- mkdir postgres-operator-with-sdk
+- cd postgres-operator-with-sdk/
+- operator-sdk new postgres-operator --api-version=postgres.test.com/v1alpha1 --kind=Postgres
