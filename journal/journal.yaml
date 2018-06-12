@@ -1,0 +1,18 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: journal-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: journal-pod
+  template:
+    metadata:
+      labels:
+        app: journal-pod
+    spec:
+      containers:
+      - name: journal
+        image: testprov:10
+        imagePullPolicy: Never
