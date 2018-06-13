@@ -1,0 +1,41 @@
+export GOOS=linux; go build .
+
+docker build -t kube-sample-apiserver-prov-1:latest ./artifacts/simple-image
+
+
+# create the namespace to run the apiserver in
+kubectl create ns wardle
+
+# create configmap to store crdlist
+kubectl create configmap crdlist --from-file=crds.list -n wardle
+
+# create the service account used to run the server
+kubectl create -f artifacts/example/sa.yaml -n wardle
+
+# create the rolebindings that allow the service account user to delegate authz back to the kubernetes master for incoming requests to the apiserver
+kubectl create -f artifacts/example/auth-delegator.yaml -n kube-system
+kubectl create -f artifacts/example/auth-reader.yaml -n kube-system
+
+# create the service and replication controller
+kubectl create -f artifacts/example/rc.yaml -n wardle
+kubectl create -f artifacts/example/service.yaml -n wardle
+
+# create the apiservice object that tells kubernetes about your api extension and where in the cluster the server is located
+kubectl create -f artifacts/example/apiservice.yaml
+
+
+
+curl http://localhost:5005/apis/apps/v1/namespaces/default/deployments
+curl http://localhost:5005/api/v1/services
+curl http://localhost:5005/api/v1/configmaps
+curl http://localhost:5005/api/v1/replicationcontrollers
+curl http://localhost:5005/api/v1/pods
+curl http://localhost:5005/api/v1/namespaces
+curl http://localhost:5005/api/v1/namespaces/default/pods
+curl http://localhost:5005/apis/extensions/v1beta1/namespaces/default/replicasets/podtest5-deployment-67bc47dd5b
+curl http://localhost:5005/apis/extensions/v1beta1/namespaces/default/deployments/podtest5-deployment
+curl http://localhost:5005/api/v1/namespaces/default/pods
+
+
+References:
+- https://stackoverflow.com/questions/30690186/how-do-i-access-the-kubernetes-api-from-within-a-pod-container

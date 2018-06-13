@@ -1,0 +1,20 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: podtest4-deployment
+  labels:
+    app: podtest4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: podtest4
+  template:
+    metadata:
+      labels:
+        app: podtest4
+    spec:
+      containers:
+      - name: podtest4
+        image: podtest:4
+        imagePullPolicy: Never

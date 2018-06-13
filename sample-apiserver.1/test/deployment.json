@@ -1,0 +1,451 @@
+{
+  "kind": "DeploymentList",
+  "apiVersion": "apps/v1",
+  "metadata": {
+    "selfLink": "/apis/apps/v1/namespaces/default/deployments",
+    "resourceVersion": "595136"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "greetings-deployment",
+        "namespace": "default",
+        "selfLink": "/apis/apps/v1/namespaces/default/deployments/greetings-deployment",
+        "uid": "f9bfb003-4ffc-11e8-9956-080027264326",
+        "resourceVersion": "587811",
+        "generation": 1,
+        "creationTimestamp": "2018-05-05T00:40:57Z",
+        "labels": {
+          "app": "greetings"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1beta1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"greetings\"},\"name\":\"greetings-deployment\",\"namespace\":\"default\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"greetings\"}},\"template\":{\"metadata\":{\"labels\":{\"app\":\"greetings\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"PASSWORD\",\"value\":\"testpass123!@#\"},{\"name\":\"DB\",\"value\":\"testdb\"},{\"name\":\"HOST\",\"value\":\"35.225.61.225\"},{\"name\":\"USER\",\"value\":\"root\"}],\"image\":\"nginx\",\"name\":\"greetings1\",\"ports\":[{\"containerPort\":5000}]}]}}}}\n",
+          "deployment.kubernetes.io/revision": "1"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "greetings"
+          }
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "app": "greetings"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "greetings1",
+                "image": "nginx",
+                "ports": [
+                  {
+                    "containerPort": 5000,
+                    "protocol": "TCP"
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "PASSWORD",
+                    "value": "testpass123!@#"
+                  },
+                  {
+                    "name": "DB",
+                    "value": "testdb"
+                  },
+                  {
+                    "name": "HOST",
+                    "value": "35.225.61.225"
+                  },
+                  {
+                    "name": "USER",
+                    "value": "root"
+                  }
+                ],
+                "resources": {
+                  
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "Always"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        },
+        "strategy": {
+          "type": "RollingUpdate",
+          "rollingUpdate": {
+            "maxUnavailable": "25%",
+            "maxSurge": "25%"
+          }
+        },
+        "revisionHistoryLimit": 2,
+        "progressDeadlineSeconds": 600
+      },
+      "status": {
+        "observedGeneration": 1,
+        "replicas": 1,
+        "updatedReplicas": 1,
+        "readyReplicas": 1,
+        "availableReplicas": 1,
+        "conditions": [
+          {
+            "type": "Progressing",
+            "status": "True",
+            "lastUpdateTime": "2018-05-05T00:45:04Z",
+            "lastTransitionTime": "2018-05-05T00:40:57Z",
+            "reason": "NewReplicaSetAvailable",
+            "message": "ReplicaSet \"greetings-deployment-f78d575bf\" has successfully progressed."
+          },
+          {
+            "type": "Available",
+            "status": "True",
+            "lastUpdateTime": "2018-06-10T21:17:32Z",
+            "lastTransitionTime": "2018-06-10T21:17:32Z",
+            "reason": "MinimumReplicasAvailable",
+            "message": "Deployment has minimum availability."
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "hello-minikube",
+        "namespace": "default",
+        "selfLink": "/apis/apps/v1/namespaces/default/deployments/hello-minikube",
+        "uid": "19400247-172b-11e8-96ba-080027264326",
+        "resourceVersion": "587825",
+        "generation": 1,
+        "creationTimestamp": "2018-02-21T17:17:30Z",
+        "labels": {
+          "run": "hello-minikube"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "1"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "run": "hello-minikube"
+          }
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "run": "hello-minikube"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "hello-minikube",
+                "image": "k8s.gcr.io/echoserver:1.4",
+                "ports": [
+                  {
+                    "containerPort": 8080,
+                    "protocol": "TCP"
+                  }
+                ],
+                "resources": {
+                  
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        },
+        "strategy": {
+          "type": "RollingUpdate",
+          "rollingUpdate": {
+            "maxUnavailable": 1,
+            "maxSurge": 1
+          }
+        }
+      },
+      "status": {
+        "observedGeneration": 1,
+        "replicas": 1,
+        "updatedReplicas": 1,
+        "readyReplicas": 1,
+        "availableReplicas": 1,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastUpdateTime": "2018-02-21T17:17:30Z",
+            "lastTransitionTime": "2018-02-21T17:17:30Z",
+            "reason": "MinimumReplicasAvailable",
+            "message": "Deployment has minimum availability."
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "podtest5-deployment",
+        "namespace": "default",
+        "selfLink": "/apis/apps/v1/namespaces/default/deployments/podtest5-deployment",
+        "uid": "64e20851-6ce1-11e8-b5e6-080027264326",
+        "resourceVersion": "594672",
+        "generation": 1,
+        "creationTimestamp": "2018-06-10T19:06:35Z",
+        "labels": {
+          "app": "podtest5"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "1",
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"apps/v1beta1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"podtest5\"},\"name\":\"podtest5-deployment\",\"namespace\":\"default\"},\"spec\":{\"replicas\":1,\"selector\":{\"matchLabels\":{\"app\":\"podtest5\"}},\"template\":{\"metadata\":{\"labels\":{\"app\":\"podtest5\"}},\"spec\":{\"containers\":[{\"image\":\"podtest:5\",\"imagePullPolicy\":\"Never\",\"name\":\"podtest5\"}]}}}}\n"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "podtest5"
+          }
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "app": "podtest5"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "podtest5",
+                "image": "podtest:5",
+                "resources": {
+                  
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "Never"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        },
+        "strategy": {
+          "type": "RollingUpdate",
+          "rollingUpdate": {
+            "maxUnavailable": "25%",
+            "maxSurge": "25%"
+          }
+        },
+        "revisionHistoryLimit": 2,
+        "progressDeadlineSeconds": 600
+      },
+      "status": {
+        "observedGeneration": 1,
+        "replicas": 1,
+        "updatedReplicas": 1,
+        "unavailableReplicas": 1,
+        "conditions": [
+          {
+            "type": "Progressing",
+            "status": "True",
+            "lastUpdateTime": "2018-06-10T19:07:10Z",
+            "lastTransitionTime": "2018-06-10T19:06:35Z",
+            "reason": "NewReplicaSetAvailable",
+            "message": "ReplicaSet \"podtest5-deployment-67bc47dd5b\" has successfully progressed."
+          },
+          {
+            "type": "Available",
+            "status": "False",
+            "lastUpdateTime": "2018-06-11T01:10:37Z",
+            "lastTransitionTime": "2018-06-11T01:10:37Z",
+            "reason": "MinimumReplicasUnavailable",
+            "message": "Deployment does not have minimum availability."
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "prometheus",
+        "namespace": "default",
+        "selfLink": "/apis/apps/v1/namespaces/default/deployments/prometheus",
+        "uid": "6dd57906-66ad-11e8-9e46-080027264326",
+        "resourceVersion": "464044",
+        "generation": 1,
+        "creationTimestamp": "2018-06-02T21:39:29Z",
+        "labels": {
+          "app": "prometheus"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "1"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "prometheus"
+          }
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "app": "prometheus"
+            }
+          },
+          "spec": {
+            "volumes": [
+              {
+                "name": "prom-config",
+                "configMap": {
+                  "name": "prometheus",
+                  "defaultMode": 420
+                }
+              },
+              {
+                "name": "serving-certs",
+                "secret": {
+                  "secretName": "serving-cm-adapter",
+                  "defaultMode": 420
+                }
+              }
+            ],
+            "containers": [
+              {
+                "name": "prometheus",
+                "image": "prom/prometheus:v2.2.0-rc.0",
+                "args": [
+                  "--config.file=/etc/prometheus/prometheus.yml"
+                ],
+                "ports": [
+                  {
+                    "name": "prom-web",
+                    "containerPort": 9090,
+                    "protocol": "TCP"
+                  }
+                ],
+                "resources": {
+                  
+                },
+                "volumeMounts": [
+                  {
+                    "name": "prom-config",
+                    "mountPath": "/etc/prometheus"
+                  }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+              },
+              {
+                "name": "cm-adapter",
+                "image": "directxman12/k8s-prometheus-adapter",
+                "args": [
+                  "--secure-port=6443",
+                  "--logtostderr=true",
+                  "--tls-cert-file=/var/run/serving-certs/tls.crt",
+                  "--tls-private-key-file=/var/run/serving-certs/tls.key",
+                  "--prometheus-url=http://localhost:9090",
+                  "--metrics-relist-interval=1m",
+                  "--rate-interval=30s",
+                  "--discovery-interval=10m",
+                  "--v=4"
+                ],
+                "ports": [
+                  {
+                    "name": "https",
+                    "containerPort": 6443,
+                    "protocol": "TCP"
+                  }
+                ],
+                "resources": {
+                  
+                },
+                "volumeMounts": [
+                  {
+                    "name": "serving-certs",
+                    "readOnly": true,
+                    "mountPath": "/var/run/serving-certs"
+                  }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "Always"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "serviceAccountName": "prom-cm-adapter",
+            "serviceAccount": "prom-cm-adapter",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        },
+        "strategy": {
+          "type": "RollingUpdate",
+          "rollingUpdate": {
+            "maxUnavailable": "25%",
+            "maxSurge": "25%"
+          }
+        },
+        "revisionHistoryLimit": 10,
+        "progressDeadlineSeconds": 600
+      },
+      "status": {
+        "observedGeneration": 1,
+        "replicas": 1,
+        "updatedReplicas": 1,
+        "unavailableReplicas": 1,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "False",
+            "lastUpdateTime": "2018-06-02T21:39:29Z",
+            "lastTransitionTime": "2018-06-02T21:39:29Z",
+            "reason": "MinimumReplicasUnavailable",
+            "message": "Deployment does not have minimum availability."
+          },
+          {
+            "type": "Progressing",
+            "status": "False",
+            "lastUpdateTime": "2018-06-02T21:49:30Z",
+            "lastTransitionTime": "2018-06-02T21:49:30Z",
+            "reason": "ProgressDeadlineExceeded",
+            "message": "ReplicaSet \"prometheus-7449cf849c\" has timed out progressing."
+          }
+        ]
+      }
+    }
+  ]
+}

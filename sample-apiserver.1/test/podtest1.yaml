@@ -1,0 +1,19 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: podtest6
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: podtest6
+  template:
+    metadata:
+      labels:
+        app: podtest6
+    spec:
+      containers:
+      - name: podtest6
+        image: podtest:5
+        imagePullPolicy: Never

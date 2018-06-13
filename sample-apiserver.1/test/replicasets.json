@@ -1,0 +1,409 @@
+{
+  "kind": "ReplicaSetList",
+  "apiVersion": "extensions/v1beta1",
+  "metadata": {
+    "selfLink": "/apis/extensions/v1beta1/namespaces/default/replicasets",
+    "resourceVersion": "595261"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "greetings-deployment-f78d575bf",
+        "namespace": "default",
+        "selfLink": "/apis/extensions/v1beta1/namespaces/default/replicasets/greetings-deployment-f78d575bf",
+        "uid": "f9c29ac0-4ffc-11e8-9956-080027264326",
+        "resourceVersion": "587808",
+        "generation": 1,
+        "creationTimestamp": "2018-05-05T00:40:57Z",
+        "labels": {
+          "app": "greetings",
+          "pod-template-hash": "934813169"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/desired-replicas": "1",
+          "deployment.kubernetes.io/max-replicas": "2",
+          "deployment.kubernetes.io/revision": "1"
+        },
+        "ownerReferences": [
+          {
+            "apiVersion": "extensions/v1beta1",
+            "kind": "Deployment",
+            "name": "greetings-deployment",
+            "uid": "f9bfb003-4ffc-11e8-9956-080027264326",
+            "controller": true,
+            "blockOwnerDeletion": true
+          }
+        ]
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "pod-template-hash": "934813169",
+            "app": "greetings"
+          }
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "app": "greetings",
+              "pod-template-hash": "934813169"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "greetings1",
+                "image": "nginx",
+                "ports": [
+                  {
+                    "containerPort": 5000,
+                    "protocol": "TCP"
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "PASSWORD",
+                    "value": "testpass123!@#"
+                  },
+                  {
+                    "name": "DB",
+                    "value": "testdb"
+                  },
+                  {
+                    "name": "HOST",
+                    "value": "35.225.61.225"
+                  },
+                  {
+                    "name": "USER",
+                    "value": "root"
+                  }
+                ],
+                "resources": {
+                  
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "Always"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        }
+      },
+      "status": {
+        "replicas": 1,
+        "fullyLabeledReplicas": 1,
+        "readyReplicas": 1,
+        "availableReplicas": 1,
+        "observedGeneration": 1
+      }
+    },
+    {
+      "metadata": {
+        "name": "hello-minikube-c6c6764d",
+        "namespace": "default",
+        "selfLink": "/apis/extensions/v1beta1/namespaces/default/replicasets/hello-minikube-c6c6764d",
+        "uid": "19417ef0-172b-11e8-96ba-080027264326",
+        "resourceVersion": "587824",
+        "generation": 1,
+        "creationTimestamp": "2018-02-21T17:17:30Z",
+        "labels": {
+          "pod-template-hash": "72723208",
+          "run": "hello-minikube"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/desired-replicas": "1",
+          "deployment.kubernetes.io/max-replicas": "2",
+          "deployment.kubernetes.io/revision": "1"
+        },
+        "ownerReferences": [
+          {
+            "apiVersion": "extensions/v1beta1",
+            "kind": "Deployment",
+            "name": "hello-minikube",
+            "uid": "19400247-172b-11e8-96ba-080027264326",
+            "controller": true,
+            "blockOwnerDeletion": true
+          }
+        ]
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "pod-template-hash": "72723208",
+            "run": "hello-minikube"
+          }
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "run": "hello-minikube",
+              "pod-template-hash": "72723208"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "hello-minikube",
+                "image": "k8s.gcr.io/echoserver:1.4",
+                "ports": [
+                  {
+                    "containerPort": 8080,
+                    "protocol": "TCP"
+                  }
+                ],
+                "resources": {
+                  
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        }
+      },
+      "status": {
+        "replicas": 1,
+        "fullyLabeledReplicas": 1,
+        "readyReplicas": 1,
+        "availableReplicas": 1,
+        "observedGeneration": 1
+      }
+    },
+    {
+      "metadata": {
+        "name": "podtest5-deployment-67bc47dd5b",
+        "namespace": "default",
+        "selfLink": "/apis/extensions/v1beta1/namespaces/default/replicasets/podtest5-deployment-67bc47dd5b",
+        "uid": "64f1b8a0-6ce1-11e8-b5e6-080027264326",
+        "resourceVersion": "595232",
+        "generation": 1,
+        "creationTimestamp": "2018-06-10T19:06:35Z",
+        "labels": {
+          "app": "podtest5",
+          "pod-template-hash": "2367038816"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/desired-replicas": "1",
+          "deployment.kubernetes.io/max-replicas": "2",
+          "deployment.kubernetes.io/revision": "1"
+        },
+        "ownerReferences": [
+          {
+            "apiVersion": "extensions/v1beta1",
+            "kind": "Deployment",
+            "name": "podtest5-deployment",
+            "uid": "64e20851-6ce1-11e8-b5e6-080027264326",
+            "controller": true,
+            "blockOwnerDeletion": true
+          }
+        ]
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "podtest5",
+            "pod-template-hash": "2367038816"
+          }
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "app": "podtest5",
+              "pod-template-hash": "2367038816"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "podtest5",
+                "image": "podtest:5",
+                "resources": {
+                  
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "Never"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        }
+      },
+      "status": {
+        "replicas": 1,
+        "fullyLabeledReplicas": 1,
+        "observedGeneration": 1
+      }
+    },
+    {
+      "metadata": {
+        "name": "prometheus-7449cf849c",
+        "namespace": "default",
+        "selfLink": "/apis/extensions/v1beta1/namespaces/default/replicasets/prometheus-7449cf849c",
+        "uid": "6dd86147-66ad-11e8-9e46-080027264326",
+        "resourceVersion": "463574",
+        "generation": 1,
+        "creationTimestamp": "2018-06-02T21:39:29Z",
+        "labels": {
+          "app": "prometheus",
+          "pod-template-hash": "3005794057"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/desired-replicas": "1",
+          "deployment.kubernetes.io/max-replicas": "2",
+          "deployment.kubernetes.io/revision": "1"
+        },
+        "ownerReferences": [
+          {
+            "apiVersion": "extensions/v1beta1",
+            "kind": "Deployment",
+            "name": "prometheus",
+            "uid": "6dd57906-66ad-11e8-9e46-080027264326",
+            "controller": true,
+            "blockOwnerDeletion": true
+          }
+        ]
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "prometheus",
+            "pod-template-hash": "3005794057"
+          }
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "app": "prometheus",
+              "pod-template-hash": "3005794057"
+            }
+          },
+          "spec": {
+            "volumes": [
+              {
+                "name": "prom-config",
+                "configMap": {
+                  "name": "prometheus",
+                  "defaultMode": 420
+                }
+              },
+              {
+                "name": "serving-certs",
+                "secret": {
+                  "secretName": "serving-cm-adapter",
+                  "defaultMode": 420
+                }
+              }
+            ],
+            "containers": [
+              {
+                "name": "prometheus",
+                "image": "prom/prometheus:v2.2.0-rc.0",
+                "args": [
+                  "--config.file=/etc/prometheus/prometheus.yml"
+                ],
+                "ports": [
+                  {
+                    "name": "prom-web",
+                    "containerPort": 9090,
+                    "protocol": "TCP"
+                  }
+                ],
+                "resources": {
+                  
+                },
+                "volumeMounts": [
+                  {
+                    "name": "prom-config",
+                    "mountPath": "/etc/prometheus"
+                  }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+              },
+              {
+                "name": "cm-adapter",
+                "image": "directxman12/k8s-prometheus-adapter",
+                "args": [
+                  "--secure-port=6443",
+                  "--logtostderr=true",
+                  "--tls-cert-file=/var/run/serving-certs/tls.crt",
+                  "--tls-private-key-file=/var/run/serving-certs/tls.key",
+                  "--prometheus-url=http://localhost:9090",
+                  "--metrics-relist-interval=1m",
+                  "--rate-interval=30s",
+                  "--discovery-interval=10m",
+                  "--v=4"
+                ],
+                "ports": [
+                  {
+                    "name": "https",
+                    "containerPort": 6443,
+                    "protocol": "TCP"
+                  }
+                ],
+                "resources": {
+                  
+                },
+                "volumeMounts": [
+                  {
+                    "name": "serving-certs",
+                    "readOnly": true,
+                    "mountPath": "/var/run/serving-certs"
+                  }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "Always"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "serviceAccountName": "prom-cm-adapter",
+            "serviceAccount": "prom-cm-adapter",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        }
+      },
+      "status": {
+        "replicas": 1,
+        "fullyLabeledReplicas": 1,
+        "observedGeneration": 1
+      }
+    }
+  ]
+}

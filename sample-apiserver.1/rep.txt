@@ -1,0 +1,669 @@
+{
+  "kind": "ReplicationControllerList",
+  "apiVersion": "v1",
+  "metadata": {
+    "selfLink": "/api/v1/replicationcontrollers",
+    "resourceVersion": "573360"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "elasticsearch-logging",
+        "namespace": "kube-system",
+        "selfLink": "/api/v1/namespaces/kube-system/replicationcontrollers/elasticsearch-logging",
+        "uid": "161018a8-172e-11e8-96ba-080027264326",
+        "resourceVersion": "573329",
+        "generation": 1,
+        "creationTimestamp": "2018-02-21T17:38:54Z",
+        "labels": {
+          "k8s-app": "elasticsearch-logging",
+          "kubernetes.io/minikube-addons": "efk",
+          "addonmanager.kubernetes.io/mode": "Reconcile"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"ReplicationController\",\"metadata\":{\"annotations\":{},\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"elasticsearch-logging\",\"kubernetes.io/minikube-addons\":\"efk\"},\"name\":\"elasticsearch-logging\",\"namespace\":\"kube-system\"},\"spec\":{\"replicas\":1,\"selector\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"elasticsearch-logging\"},\"template\":{\"metadata\":{\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"elasticsearch-logging\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"NAMESPACE\",\"valueFrom\":{\"fieldRef\":{\"fieldPath\":\"metadata.namespace\"}}},{\"name\":\"MINIMUM_MASTER_NODES\",\"value\":\"1\"}],\"image\":\"gcr.io/google-containers/elasticsearch:v5.6.2\",\"name\":\"elasticsearch-logging\",\"ports\":[{\"containerPort\":9200,\"name\":\"db\",\"protocol\":\"TCP\"},{\"containerPort\":9300,\"name\":\"transport\",\"protocol\":\"TCP\"}],\"resources\":{\"limits\":{\"cpu\":\"500m\"},\"requests\":{\"cpu\":\"100m\"}},\"volumeMounts\":[{\"mountPath\":\"/data\",\"name\":\"elasticsearch-logging\"}]}],\"initContainers\":[{\"command\":[\"/sbin/sysctl\",\"-w\",\"vm.max_map_count=262144\"],\"image\":\"registry.hub.docker.com/library/alpine:3.6\",\"name\":\"elasticsearch-logging-init\",\"securityContext\":{\"privileged\":true}}],\"volumes\":[{\"emptyDir\":{},\"name\":\"elasticsearch-logging\"}]}}}}\n"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "addonmanager.kubernetes.io/mode": "Reconcile",
+          "k8s-app": "elasticsearch-logging"
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "addonmanager.kubernetes.io/mode": "Reconcile",
+              "k8s-app": "elasticsearch-logging"
+            }
+          },
+          "spec": {
+            "volumes": [
+              {
+                "name": "elasticsearch-logging",
+                "emptyDir": {
+                  
+                }
+              }
+            ],
+            "initContainers": [
+              {
+                "name": "elasticsearch-logging-init",
+                "image": "registry.hub.docker.com/library/alpine:3.6",
+                "command": [
+                  "/sbin/sysctl",
+                  "-w",
+                  "vm.max_map_count=262144"
+                ],
+                "resources": {
+                  
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent",
+                "securityContext": {
+                  "privileged": true
+                }
+              }
+            ],
+            "containers": [
+              {
+                "name": "elasticsearch-logging",
+                "image": "gcr.io/google-containers/elasticsearch:v5.6.2",
+                "ports": [
+                  {
+                    "name": "db",
+                    "containerPort": 9200,
+                    "protocol": "TCP"
+                  },
+                  {
+                    "name": "transport",
+                    "containerPort": 9300,
+                    "protocol": "TCP"
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "NAMESPACE",
+                    "valueFrom": {
+                      "fieldRef": {
+                        "apiVersion": "v1",
+                        "fieldPath": "metadata.namespace"
+                      }
+                    }
+                  },
+                  {
+                    "name": "MINIMUM_MASTER_NODES",
+                    "value": "1"
+                  }
+                ],
+                "resources": {
+                  "limits": {
+                    "cpu": "500m"
+                  },
+                  "requests": {
+                    "cpu": "100m"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "elasticsearch-logging",
+                    "mountPath": "/data"
+                  }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        }
+      },
+      "status": {
+        "replicas": 1,
+        "fullyLabeledReplicas": 1,
+        "observedGeneration": 1
+      }
+    },
+    {
+      "metadata": {
+        "name": "fluentd-es",
+        "namespace": "kube-system",
+        "selfLink": "/api/v1/namespaces/kube-system/replicationcontrollers/fluentd-es",
+        "uid": "1654531f-172e-11e8-96ba-080027264326",
+        "resourceVersion": "557747",
+        "generation": 1,
+        "creationTimestamp": "2018-02-21T17:38:54Z",
+        "labels": {
+          "k8s-app": "fluentd-es",
+          "kubernetes.io/minikube-addons": "efk",
+          "addonmanager.kubernetes.io/mode": "Reconcile"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"ReplicationController\",\"metadata\":{\"annotations\":{},\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"fluentd-es\",\"kubernetes.io/minikube-addons\":\"efk\"},\"name\":\"fluentd-es\",\"namespace\":\"kube-system\"},\"spec\":{\"replicas\":1,\"template\":{\"metadata\":{\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"fluentd-es\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"FLUENTD_ARGS\",\"value\":\"--no-supervisor -q\"}],\"image\":\"gcr.io/google-containers/fluentd-elasticsearch:v2.0.2\",\"name\":\"fluentd-es\",\"resources\":{\"limits\":{\"memory\":\"500Mi\"},\"requests\":{\"cpu\":\"100m\",\"memory\":\"200Mi\"}},\"volumeMounts\":[{\"mountPath\":\"/var/log\",\"name\":\"varlog\"},{\"mountPath\":\"/var/lib/docker/containers\",\"name\":\"varlibdockercontainers\",\"readOnly\":true},{\"mountPath\":\"/host/lib\",\"name\":\"libsystemddir\",\"readOnly\":true},{\"mountPath\":\"/etc/fluent/config.d\",\"name\":\"config-volume\"}]}],\"terminationGracePeriodSeconds\":30,\"volumes\":[{\"hostPath\":{\"path\":\"/var/log\"},\"name\":\"varlog\"},{\"hostPath\":{\"path\":\"/var/lib/docker/containers\"},\"name\":\"varlibdockercontainers\"},{\"hostPath\":{\"path\":\"/usr/lib64\"},\"name\":\"libsystemddir\"},{\"configMap\":{\"name\":\"fluentd-es-config\"},\"name\":\"config-volume\"}]}}}}\n"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "addonmanager.kubernetes.io/mode": "Reconcile",
+          "k8s-app": "fluentd-es"
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "addonmanager.kubernetes.io/mode": "Reconcile",
+              "k8s-app": "fluentd-es"
+            }
+          },
+          "spec": {
+            "volumes": [
+              {
+                "name": "varlog",
+                "hostPath": {
+                  "path": "/var/log",
+                  "type": ""
+                }
+              },
+              {
+                "name": "varlibdockercontainers",
+                "hostPath": {
+                  "path": "/var/lib/docker/containers",
+                  "type": ""
+                }
+              },
+              {
+                "name": "libsystemddir",
+                "hostPath": {
+                  "path": "/usr/lib64",
+                  "type": ""
+                }
+              },
+              {
+                "name": "config-volume",
+                "configMap": {
+                  "name": "fluentd-es-config",
+                  "defaultMode": 420
+                }
+              }
+            ],
+            "containers": [
+              {
+                "name": "fluentd-es",
+                "image": "gcr.io/google-containers/fluentd-elasticsearch:v2.0.2",
+                "env": [
+                  {
+                    "name": "FLUENTD_ARGS",
+                    "value": "--no-supervisor -q"
+                  }
+                ],
+                "resources": {
+                  "limits": {
+                    "memory": "500Mi"
+                  },
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "200Mi"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "varlog",
+                    "mountPath": "/var/log"
+                  },
+                  {
+                    "name": "varlibdockercontainers",
+                    "readOnly": true,
+                    "mountPath": "/var/lib/docker/containers"
+                  },
+                  {
+                    "name": "libsystemddir",
+                    "readOnly": true,
+                    "mountPath": "/host/lib"
+                  },
+                  {
+                    "name": "config-volume",
+                    "mountPath": "/etc/fluent/config.d"
+                  }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        }
+      },
+      "status": {
+        "replicas": 1,
+        "fullyLabeledReplicas": 1,
+        "readyReplicas": 1,
+        "availableReplicas": 1,
+        "observedGeneration": 1
+      }
+    },
+    {
+      "metadata": {
+        "name": "heapster",
+        "namespace": "kube-system",
+        "selfLink": "/api/v1/namespaces/kube-system/replicationcontrollers/heapster",
+        "uid": "3cdb4b0d-172d-11e8-96ba-080027264326",
+        "resourceVersion": "557697",
+        "generation": 1,
+        "creationTimestamp": "2018-02-21T17:32:49Z",
+        "labels": {
+          "k8s-app": "heapster",
+          "kubernetes.io/minikube-addons": "heapster",
+          "addonmanager.kubernetes.io/mode": "Reconcile"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"ReplicationController\",\"metadata\":{\"annotations\":{},\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"heapster\",\"kubernetes.io/minikube-addons\":\"heapster\"},\"name\":\"heapster\",\"namespace\":\"kube-system\"},\"spec\":{\"replicas\":1,\"selector\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"heapster\"},\"template\":{\"metadata\":{\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"heapster\"}},\"spec\":{\"containers\":[{\"command\":[\"/heapster\",\"--source=kubernetes.summary_api:''\",\"--sink=influxdb:http://monitoring-influxdb:8086\",\"--metric_resolution=60s\"],\"image\":\"k8s.gcr.io/heapster-amd64:v1.5.0\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"heapster\",\"volumeMounts\":[{\"mountPath\":\"/etc/ssl/certs\",\"name\":\"ssl-certs\",\"readOnly\":true}]}],\"volumes\":[{\"hostPath\":{\"path\":\"/etc/ssl/certs\"},\"name\":\"ssl-certs\"}]}}}}\n"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "addonmanager.kubernetes.io/mode": "Reconcile",
+          "k8s-app": "heapster"
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "addonmanager.kubernetes.io/mode": "Reconcile",
+              "k8s-app": "heapster"
+            }
+          },
+          "spec": {
+            "volumes": [
+              {
+                "name": "ssl-certs",
+                "hostPath": {
+                  "path": "/etc/ssl/certs",
+                  "type": ""
+                }
+              }
+            ],
+            "containers": [
+              {
+                "name": "heapster",
+                "image": "k8s.gcr.io/heapster-amd64:v1.5.0",
+                "command": [
+                  "/heapster",
+                  "--source=kubernetes.summary_api:''",
+                  "--sink=influxdb:http://monitoring-influxdb:8086",
+                  "--metric_resolution=60s"
+                ],
+                "resources": {
+                  
+                },
+                "volumeMounts": [
+                  {
+                    "name": "ssl-certs",
+                    "readOnly": true,
+                    "mountPath": "/etc/ssl/certs"
+                  }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        }
+      },
+      "status": {
+        "replicas": 1,
+        "fullyLabeledReplicas": 1,
+        "readyReplicas": 1,
+        "availableReplicas": 1,
+        "observedGeneration": 1
+      }
+    },
+    {
+      "metadata": {
+        "name": "influxdb-grafana",
+        "namespace": "kube-system",
+        "selfLink": "/api/v1/namespaces/kube-system/replicationcontrollers/influxdb-grafana",
+        "uid": "3cf6b545-172d-11e8-96ba-080027264326",
+        "resourceVersion": "557718",
+        "generation": 1,
+        "creationTimestamp": "2018-02-21T17:32:49Z",
+        "labels": {
+          "kubernetes.io/minikube-addons": "heapster",
+          "addonmanager.kubernetes.io/mode": "Reconcile",
+          "k8s-app": "influx-grafana"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"ReplicationController\",\"metadata\":{\"annotations\":{},\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"influx-grafana\",\"kubernetes.io/minikube-addons\":\"heapster\"},\"name\":\"influxdb-grafana\",\"namespace\":\"kube-system\"},\"spec\":{\"replicas\":1,\"selector\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"influx-grafana\"},\"template\":{\"metadata\":{\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"influx-grafana\"}},\"spec\":{\"containers\":[{\"image\":\"k8s.gcr.io/heapster-influxdb-amd64:v1.3.3\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"influxdb\",\"ports\":[{\"containerPort\":8083,\"name\":\"http\"},{\"containerPort\":8086,\"name\":\"api\"}],\"volumeMounts\":[{\"mountPath\":\"/data\",\"name\":\"influxdb-storage\"}]},{\"env\":[{\"name\":\"INFLUXDB_SERVICE_URL\",\"value\":\"http://localhost:8086\"},{\"name\":\"GF_AUTH_BASIC_ENABLED\",\"value\":\"false\"},{\"name\":\"GF_AUTH_ANONYMOUS_ENABLED\",\"value\":\"true\"},{\"name\":\"GF_AUTH_ANONYMOUS_ORG_ROLE\",\"value\":\"Admin\"},{\"name\":\"GF_SERVER_ROOT_URL\",\"value\":\"/\"}],\"image\":\"k8s.gcr.io/heapster-grafana-amd64:v4.4.3\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"grafana\",\"ports\":[{\"containerPort\":3000,\"name\":\"ui\"}],\"volumeMounts\":[{\"mountPath\":\"/var\",\"name\":\"grafana-storage\"}]}],\"volumes\":[{\"emptyDir\":{},\"name\":\"influxdb-storage\"},{\"emptyDir\":{},\"name\":\"grafana-storage\"}]}}}}\n"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "addonmanager.kubernetes.io/mode": "Reconcile",
+          "k8s-app": "influx-grafana"
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "addonmanager.kubernetes.io/mode": "Reconcile",
+              "k8s-app": "influx-grafana"
+            }
+          },
+          "spec": {
+            "volumes": [
+              {
+                "name": "influxdb-storage",
+                "emptyDir": {
+                  
+                }
+              },
+              {
+                "name": "grafana-storage",
+                "emptyDir": {
+                  
+                }
+              }
+            ],
+            "containers": [
+              {
+                "name": "influxdb",
+                "image": "k8s.gcr.io/heapster-influxdb-amd64:v1.3.3",
+                "ports": [
+                  {
+                    "name": "http",
+                    "containerPort": 8083,
+                    "protocol": "TCP"
+                  },
+                  {
+                    "name": "api",
+                    "containerPort": 8086,
+                    "protocol": "TCP"
+                  }
+                ],
+                "resources": {
+                  
+                },
+                "volumeMounts": [
+                  {
+                    "name": "influxdb-storage",
+                    "mountPath": "/data"
+                  }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+              },
+              {
+                "name": "grafana",
+                "image": "k8s.gcr.io/heapster-grafana-amd64:v4.4.3",
+                "ports": [
+                  {
+                    "name": "ui",
+                    "containerPort": 3000,
+                    "protocol": "TCP"
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "INFLUXDB_SERVICE_URL",
+                    "value": "http://localhost:8086"
+                  },
+                  {
+                    "name": "GF_AUTH_BASIC_ENABLED",
+                    "value": "false"
+                  },
+                  {
+                    "name": "GF_AUTH_ANONYMOUS_ENABLED",
+                    "value": "true"
+                  },
+                  {
+                    "name": "GF_AUTH_ANONYMOUS_ORG_ROLE",
+                    "value": "Admin"
+                  },
+                  {
+                    "name": "GF_SERVER_ROOT_URL",
+                    "value": "/"
+                  }
+                ],
+                "resources": {
+                  
+                },
+                "volumeMounts": [
+                  {
+                    "name": "grafana-storage",
+                    "mountPath": "/var"
+                  }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        }
+      },
+      "status": {
+        "replicas": 1,
+        "fullyLabeledReplicas": 1,
+        "readyReplicas": 1,
+        "availableReplicas": 1,
+        "observedGeneration": 1
+      }
+    },
+    {
+      "metadata": {
+        "name": "kibana-logging",
+        "namespace": "kube-system",
+        "selfLink": "/api/v1/namespaces/kube-system/replicationcontrollers/kibana-logging",
+        "uid": "16f9bde1-172e-11e8-96ba-080027264326",
+        "resourceVersion": "573333",
+        "generation": 1,
+        "creationTimestamp": "2018-02-21T17:38:55Z",
+        "labels": {
+          "addonmanager.kubernetes.io/mode": "Reconcile",
+          "k8s-app": "kibana-logging",
+          "kubernetes.io/minikube-addons": "efk"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"ReplicationController\",\"metadata\":{\"annotations\":{},\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"kibana-logging\",\"kubernetes.io/minikube-addons\":\"efk\"},\"name\":\"kibana-logging\",\"namespace\":\"kube-system\"},\"spec\":{\"replicas\":1,\"selector\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"kibana-logging\"},\"template\":{\"metadata\":{\"labels\":{\"addonmanager.kubernetes.io/mode\":\"Reconcile\",\"k8s-app\":\"kibana-logging\"}},\"spec\":{\"containers\":[{\"env\":[{\"name\":\"ELASTICSEARCH_URL\",\"value\":\"http://elasticsearch-logging:9200\"},{\"name\":\"XPACK_MONITORING_ENABLED\",\"value\":\"false\"},{\"name\":\"XPACK_SECURITY_ENABLED\",\"value\":\"false\"}],\"image\":\"docker.elastic.co/kibana/kibana:5.6.2\",\"name\":\"kibana-logging\",\"ports\":[{\"containerPort\":5601,\"name\":\"ui\",\"protocol\":\"TCP\"}],\"resources\":{\"limits\":{\"cpu\":\"500m\"},\"requests\":{\"cpu\":\"100m\"}}}]}}}}\n"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "addonmanager.kubernetes.io/mode": "Reconcile",
+          "k8s-app": "kibana-logging"
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "addonmanager.kubernetes.io/mode": "Reconcile",
+              "k8s-app": "kibana-logging"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "kibana-logging",
+                "image": "docker.elastic.co/kibana/kibana:5.6.2",
+                "ports": [
+                  {
+                    "name": "ui",
+                    "containerPort": 5601,
+                    "protocol": "TCP"
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "ELASTICSEARCH_URL",
+                    "value": "http://elasticsearch-logging:9200"
+                  },
+                  {
+                    "name": "XPACK_MONITORING_ENABLED",
+                    "value": "false"
+                  },
+                  {
+                    "name": "XPACK_SECURITY_ENABLED",
+                    "value": "false"
+                  }
+                ],
+                "resources": {
+                  "limits": {
+                    "cpu": "500m"
+                  },
+                  "requests": {
+                    "cpu": "100m"
+                  }
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        }
+      },
+      "status": {
+        "replicas": 1,
+        "fullyLabeledReplicas": 1,
+        "readyReplicas": 1,
+        "availableReplicas": 1,
+        "observedGeneration": 1
+      }
+    },
+    {
+      "metadata": {
+        "name": "wardle-server",
+        "namespace": "wardle",
+        "selfLink": "/api/v1/namespaces/wardle/replicationcontrollers/wardle-server",
+        "uid": "85e1e300-6c29-11e8-8958-080027264326",
+        "resourceVersion": "571023",
+        "generation": 1,
+        "creationTimestamp": "2018-06-09T21:10:23Z",
+        "labels": {
+          "apiserver": "true"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "apiserver": "true"
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "apiserver": "true"
+            }
+          },
+          "spec": {
+            "volumes": [
+              {
+                "name": "crdlist-volume",
+                "configMap": {
+                  "name": "crdlist",
+                  "defaultMode": 420
+                }
+              }
+            ],
+            "containers": [
+              {
+                "name": "wardle-server",
+                "image": "kube-sample-apiserver-prov-7:latest",
+                "command": [
+                  "/kube-sample-apiserver",
+                  "--etcd-servers=http://localhost:2379"
+                ],
+                "env": [
+                  {
+                    "name": "KUBEPLUS_PLATFORM_FILE",
+                    "value": "/etc/crdlist/crds.list"
+                  }
+                ],
+                "resources": {
+                  
+                },
+                "volumeMounts": [
+                  {
+                    "name": "crdlist-volume",
+                    "mountPath": "/etc/crdlist"
+                  }
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "Never"
+              },
+              {
+                "name": "etcd",
+                "image": "quay.io/coreos/etcd:v3.2.18",
+                "resources": {
+                  
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "imagePullPolicy": "IfNotPresent"
+              }
+            ],
+            "restartPolicy": "Always",
+            "terminationGracePeriodSeconds": 30,
+            "dnsPolicy": "ClusterFirst",
+            "serviceAccountName": "apiserver",
+            "serviceAccount": "apiserver",
+            "securityContext": {
+              
+            },
+            "schedulerName": "default-scheduler"
+          }
+        }
+      },
+      "status": {
+        "replicas": 1,
+        "fullyLabeledReplicas": 1,
+        "readyReplicas": 1,
+        "availableReplicas": 1,
+        "observedGeneration": 1
+      }
+    }
+  ]
+}
