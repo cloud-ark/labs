@@ -77,23 +77,50 @@ func init() {
 
 func main() {
 	fmt.Println("1")
-	resourceName := "greetings-deployment"  //"podtest5-deployment"
+	//resourceName := "greetings-deployment"  //"podtest5-deployment"
+
 	resourceKind := "Deployment"
-	level := 1
-	compositionTree := []CompositionTreeNode{}
-	fmt.Println("2")
+	resourceNameList := getResourceNames(resourceKind)
 
-	buildProvenance(resourceKind, resourceName, level, &compositionTree)
+	fmt.Println("Start")
+	for _, resourceName := range resourceNameList {
+		fmt.Printf("@@@@@ Building Provenance for %s %s @@@@@@@\n", resourceKind, resourceName)
+		level := 1
+		compositionTree := []CompositionTreeNode{}
+		fmt.Println("2")
 
-	fmt.Println("###################################")
-	fmt.Println("Printing the Composition Tree")
-	for _, compTreeNode := range compositionTree {
-		fmt.Printf("%v\n", compTreeNode)
+		buildProvenance(resourceKind, resourceName, level, &compositionTree)
+
+		fmt.Println("###################################")
+		fmt.Println("Printing the Composition Tree")
+		for _, compTreeNode := range compositionTree {
+			fmt.Printf("%v\n", compTreeNode)
+		}
+		fmt.Println("Done printing the Composition Tree")
+		fmt.Println("###################################")
+
+		storeProvenance(resourceKind, resourceName, &compositionTree)
 	}
-	fmt.Println("Done printing the Composition Tree")
-	fmt.Println("###################################")
+	fmt.Println("Done")
+}
 
-	storeProvenance(resourceKind, resourceName, &compositionTree)
+func getResourceNames(resourceKind string) []string{
+	fmt.Println("Entering getResourceNames")
+	resourceApiVersion := kindVersionMap[resourceKind]
+	resourceKindPlural := kindPluralMap[resourceKind]
+	content := getResourceListContent(resourceApiVersion, resourceKindPlural)
+	metaDataAndOwnerReferenceList := parseMetaData(content)
+
+	fmt.Println("^^^^^^^^^^^^")
+	var resourceNameSlice []string
+	resourceNameSlice = make([]string, 0)
+	for _, metaDataRef := range metaDataAndOwnerReferenceList {
+		fmt.Println("%v\n", metaDataRef.MetaDataName)
+		resourceNameSlice = append(resourceNameSlice, metaDataRef.MetaDataName)
+	}
+	fmt.Println("^^^^^^^^^^^^")
+	fmt.Println("Exiting getResourceNames")
+	return resourceNameSlice
 }
 
 func storeProvenance(resourceKind string, resourceName string, compositionTree *[]CompositionTreeNode) {
@@ -150,7 +177,8 @@ func buildProvenance(parentResourceKind string, parentResourceName string, level
 		fmt.Println("3")
 		content := getResourceListContent(childResourceApiVersion, childKindPlural)
 		fmt.Println("4")
-		childrenList := findChildren(content, parentResourceName)
+		metaDataAndOwnerReferenceList := parseMetaData(content)
+		childrenList := filterChildren(&metaDataAndOwnerReferenceList, parentResourceName)
 		fmt.Println("5")
 		compTreeNode := CompositionTreeNode{
 			Level: level,
@@ -208,8 +236,8 @@ func getResourceListContent(resourceApiVersion, resourcePlural string) []byte {
 	return resp_body
 }
 
-func findChildren(content []byte, parentResourceName string) []MetaDataAndOwnerReferences {
-	fmt.Println("Entering findChildren")
+func parseMetaData(content []byte) []MetaDataAndOwnerReferences {
+	fmt.Println("Entering parseMetaData")
 	var result map[string]interface{}
 	json.Unmarshal([]byte(content), &result)
 	// We need to parse following from the result
@@ -262,16 +290,22 @@ func findChildren(content []byte, parentResourceName string) []MetaDataAndOwnerR
 			fmt.Println("=======================")
 		}
 	}
+	fmt.Println("Exiting parseMetaData")
+	return metaDataSlice
+}
+
+func filterChildren(metaDataSlice *[]MetaDataAndOwnerReferences, parentResourceName string) []MetaDataAndOwnerReferences {
+	fmt.Println("Entering filterChildren")
 	metaDataSliceToReturn := []MetaDataAndOwnerReferences{}
 	fmt.Println("Printing the MetaDataSlice")
-	for _, metaDataRef := range metaDataSlice {
+	for _, metaDataRef := range *metaDataSlice {
 		if metaDataRef.OwnerReferenceName == parentResourceName {
 			fmt.Println("%v\n", metaDataRef)
 			fmt.Println("*************")
 			metaDataSliceToReturn = append(metaDataSliceToReturn, metaDataRef)
 		}
 	}
-	fmt.Println("Exiting findChildren")
+	fmt.Println("Exiting filterChildren")
 	return metaDataSliceToReturn
 }
 
