@@ -100,9 +100,9 @@ func init() {
 
 func main() {
 	for {
+			provenanceToPrint := false
 			resourceKindList := getResourceKinds()
 			for _, resourceKind := range resourceKindList {
-				//fmt.Printf("Resource Kind:%s", resourceKind)
 				resourceNameList := getResourceNames(resourceKind)
 				for _, resourceName := range resourceNameList {
 					provenanceNeeded := checkIfProvenanceNeeded(resourceKind, resourceName)
@@ -114,10 +114,13 @@ func main() {
 						buildProvenance(resourceKind, resourceName, level, &compositionTree)
 						storeProvenance(resourceKind, resourceName, &compositionTree)
 						fmt.Println("###################################\n")
+						provenanceToPrint = true
 					}
 				}
 			}
-			printProvenance()
+			if provenanceToPrint {
+				printProvenance()
+			}
 			time.Sleep(time.Second * 5)
 	}
 }
@@ -244,12 +247,9 @@ func buildProvenance(parentResourceKind string, parentResourceName string, level
 		for _, childResourceKind := range childResourceKindList {
 			childKindPlural := kindPluralMap[childResourceKind]
 			childResourceApiVersion := kindVersionMap[childResourceKind]
-			//fmt.Println("3")
 			content := getResourceListContent(childResourceApiVersion, childKindPlural)
-			//fmt.Println("4")
 			metaDataAndOwnerReferenceList := parseMetaData(content)
 			childrenList := filterChildren(&metaDataAndOwnerReferenceList, parentResourceName)
-			//fmt.Println("5")
 			compTreeNode := CompositionTreeNode{
 				Level: level,
 				ChildKind: childResourceKind,
@@ -261,7 +261,6 @@ func buildProvenance(parentResourceKind string, parentResourceName string, level
 			for _, metaDataRef := range childrenList {
 				resourceName := metaDataRef.MetaDataName
 				resourceKind := childResourceKind
-				//fmt.Println("6")
 				buildProvenance(resourceKind, resourceName, level, compositionTree)
 			}
 		}
@@ -355,10 +354,8 @@ func parseMetaData(content []byte) []MetaDataAndOwnerReferences {
 						}
 					}
 					metaDataSlice = append(metaDataSlice, metaDataRef)
-					//fmt.Println("----")
 				}
 			}
-			//fmt.Println("=======================")
 		}
 	}
 	//fmt.Println("Exiting parseMetaData")
@@ -430,30 +427,22 @@ func parse_prev(content []byte) map[string]string {
 
 
 func getToken() []byte {
-	//fmt.Println("Entering getToken")
 	caToken, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/token")
 	if err != nil {
 	    panic(err) // cannot find token file
 	}
-	//fmt.Println("4")
 	//fmt.Printf("Token:%s", caToken)
-	//fmt.Println("Exiting getToken")
 	return caToken
 }
 
 func getCACert() *cert.CertPool {
-	//fmt.Println("Entering getCACert")
 	caCertPool := cert.NewCertPool()
 	caCert, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
 	if err != nil {
 	    panic(err) // Can't find cert file
 	}
-
-	//fmt.Println("5")
 	//fmt.Printf("CaCert:%s",caCert)
-
 	caCertPool.AppendCertsFromPEM(caCert)
-	//fmt.Println("Exiting getCACert")
 	return caCertPool
 }
 
