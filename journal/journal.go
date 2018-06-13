@@ -15,6 +15,25 @@ import (
 	"github.com/coreos/etcd/client"
 )
 
+type MetaDataAndOwnerReferences struct {
+	MetaDataName string
+	OwnerReferenceName string
+	OwnerReferenceKind string
+	OwnerReferenceAPIVersion string
+}
+
+type CompositionTreeNode struct {
+	Level int
+	ChildKind string
+	Children []MetaDataAndOwnerReferences
+}
+
+type Provenance struct {
+	Kind string
+	Name string
+	CompositionTree *[]CompositionTreeNode
+}
+
 var (
 	serviceHost string
 	servicePort string
@@ -32,22 +51,12 @@ var (
 	CONFIG_MAP string
 	SERVICE string
 	ETCD_CLUSTER string
+
+	clusterProvenance []Provenance
 )
 
-type MetaDataAndOwnerReferences struct {
-	MetaDataName string
-	OwnerReferenceName string
-	OwnerReferenceKind string
-	OwnerReferenceAPIVersion string
-}
-
-type CompositionTreeNode struct {
-	Level int
-	ChildKind string
-	Children []MetaDataAndOwnerReferences
-}
-
 func init() {
+	clusterProvenance = []Provenance{}
 	serviceHost = os.Getenv("KUBERNETES_SERVICE_HOST")
 	servicePort = os.Getenv("KUBERNETES_SERVICE_PORT")
 	namespace = "default"
@@ -90,29 +99,38 @@ func init() {
 // 3. https://github.com/coreos/etcd/tree/master/client
 
 func main() {
-	//resourceName := "greetings-deployment"  //"podtest5-deployment"
-	//for {
+	for {
 			resourceKindList := getResourceKinds()
 			for _, resourceKind := range resourceKindList {
-				fmt.Printf("Resource Kind:%s", resourceKind)
+				//fmt.Printf("Resource Kind:%s", resourceKind)
 				resourceNameList := getResourceNames(resourceKind)
 				for _, resourceName := range resourceNameList {
-					fmt.Println("###################################")
-					fmt.Printf("@@@@@ Building Provenance for %s %s @@@@@@@\n", resourceKind, resourceName)
-					level := 1
-					compositionTree := []CompositionTreeNode{}
-					buildProvenance(resourceKind, resourceName, level, &compositionTree)
-
-					fmt.Println("Printing the Composition Tree")
-					for _, compTreeNode := range compositionTree {
-						fmt.Printf("%v\n", compTreeNode)
+					provenanceNeeded := checkIfProvenanceNeeded(resourceKind, resourceName)
+					if provenanceNeeded {
+						fmt.Println("###################################")
+						fmt.Printf("Building Provenance for %s %s\n", resourceKind, resourceName)
+						level := 1
+						compositionTree := []CompositionTreeNode{}
+						buildProvenance(resourceKind, resourceName, level, &compositionTree)
+						storeProvenance(resourceKind, resourceName, &compositionTree)
+						fmt.Println("###################################\n")
 					}
-					storeProvenance(resourceKind, resourceName, &compositionTree)
-					fmt.Println("###################################")
 				}
 			}
+			printProvenance()
 			time.Sleep(time.Second * 5)
-	//	}
+	}
+}
+
+func checkIfProvenanceNeeded(resourceKind, resourceName string) bool {
+	for _, provenanceItem := range clusterProvenance {
+		kind := provenanceItem.Kind
+		name := provenanceItem.Name
+		if resourceKind == kind && resourceName == name {
+			return false
+		}
+	}
+	return true
 }
 
 func getResourceKinds() []string {
@@ -124,25 +142,56 @@ func getResourceKinds() []string {
 }
 
 func getResourceNames(resourceKind string) []string{
-	//fmt.Println("Entering getResourceNames")
 	resourceApiVersion := kindVersionMap[resourceKind]
 	resourceKindPlural := kindPluralMap[resourceKind]
 	content := getResourceListContent(resourceApiVersion, resourceKindPlural)
 	metaDataAndOwnerReferenceList := parseMetaData(content)
 
-	//fmt.Println("^^^^^^^^^^^^")
 	var resourceNameSlice []string
 	resourceNameSlice = make([]string, 0)
 	for _, metaDataRef := range metaDataAndOwnerReferenceList {
 		//fmt.Printf("%s\n", metaDataRef.MetaDataName)
 		resourceNameSlice = append(resourceNameSlice, metaDataRef.MetaDataName)
 	}
-	//fmt.Println("^^^^^^^^^^^^")
-	//fmt.Println("Exiting getResourceNames")
 	return resourceNameSlice
 }
 
+func printProvenance() {
+	fmt.Println("Provenance of different Kinds in this Cluster")
+		for _, provenanceItem := range clusterProvenance {
+			kind := provenanceItem.Kind
+			name := provenanceItem.Name
+			compositionTree := provenanceItem.CompositionTree
+			fmt.Printf("Kind: %s Name: %s Composition:\n", kind, name)
+			for _, compositionTreeNode := range *compositionTree {
+				level := compositionTreeNode.Level
+				childKind := compositionTreeNode.ChildKind
+				metaDataAndOwnerReferences := compositionTreeNode.Children
+				for _, metaDataNode := range metaDataAndOwnerReferences {
+					childName := metaDataNode.MetaDataName
+					fmt.Printf("  %d %s %s\n", level, childKind, childName)
+				}
+			}
+			fmt.Println("============================================")
+		}
+}
+
+// This stores Provenance information in memory. The provenance information will be lost
+// when this Pod is deleted. 
 func storeProvenance(resourceKind string, resourceName string, compositionTree *[]CompositionTreeNode) {
+	provenance := Provenance{
+		Kind: resourceKind,
+		Name: resourceName,
+		CompositionTree: compositionTree,
+	}
+	clusterProvenance = append(clusterProvenance, provenance)
+}
+
+// This stores Provenance information in etcd accessible at the etcdServiceURL
+// One option to deploy etcd is to use the CoreOS etcd-operator.
+// The etcdServiceURL initialized in init() is for the example etcd cluster that
+// will be created by the etcd-operator. See https://github.com/coreos/etcd-operator
+func storeProvenance_etcd(resourceKind string, resourceName string, compositionTree *[]CompositionTreeNode) {
 	//fmt.Println("Entering storeProvenance")
     jsonCompositionTree, err := json.Marshal(compositionTree)
     if err != nil {
