@@ -12,8 +12,16 @@ import (
 	cert "crypto/x509"
 	"crypto/tls"
 	"context"
+	"gopkg.in/yaml.v2"
 	"github.com/coreos/etcd/client"
 )
+
+type composition struct {
+	Kind string `yaml:"kind"`
+	Plural string `yaml:"plural"`
+	Endpoint string `yaml:"endpoint"`
+	Composition []string `yaml:"composition"`
+}
 
 type MetaDataAndOwnerReferences struct {
 	MetaDataName string
@@ -72,6 +80,10 @@ func init() {
 	ETCD_CLUSTER = "EtcdCluster"
 
 	kindPluralMap = make(map[string]string)
+	kindVersionMap = make(map[string]string)
+	compositionMap = make(map[string][]string,0)
+
+	/*
 	kindPluralMap[DEPLOYMENT] = "deployments"
 	kindPluralMap[REPLICA_SET] = "replicasets"
 	kindPluralMap[POD] = "pods"
@@ -79,7 +91,6 @@ func init() {
 	kindPluralMap[SERVICE] = "services"
 	kindPluralMap[ETCD_CLUSTER] = "etcdclusters"
 
-	kindVersionMap = make(map[string]string)
 	kindVersionMap[DEPLOYMENT] = "apis/apps/v1"
 	kindVersionMap[REPLICA_SET] = "apis/extensions/v1beta1"
 	kindVersionMap[POD] = "api/v1"
@@ -87,10 +98,10 @@ func init() {
 	kindVersionMap[SERVICE] = "api/v1"
 	kindVersionMap[ETCD_CLUSTER] = "apis/etcd.database.coreos.com/v1beta2"
 
-	compositionMap = make(map[string][]string,0)
 	compositionMap[DEPLOYMENT] = []string{REPLICA_SET}
 	compositionMap[REPLICA_SET] = []string{POD}
 	compositionMap[ETCD_CLUSTER] = []string{POD, SERVICE}
+	*/
 }
 
 // Reference: 
@@ -99,29 +110,31 @@ func init() {
 // 3. https://github.com/coreos/etcd/tree/master/client
 
 func main() {
+
 	for {
-			provenanceToPrint := false
-			resourceKindList := getResourceKinds()
-			for _, resourceKind := range resourceKindList {
-				resourceNameList := getResourceNames(resourceKind)
-				for _, resourceName := range resourceNameList {
-					provenanceNeeded := checkIfProvenanceNeeded(resourceKind, resourceName)
-					if provenanceNeeded {
-						fmt.Println("###################################")
-						fmt.Printf("Building Provenance for %s %s\n", resourceKind, resourceName)
-						level := 1
-						compositionTree := []CompositionTreeNode{}
-						buildProvenance(resourceKind, resourceName, level, &compositionTree)
-						storeProvenance(resourceKind, resourceName, &compositionTree)
-						fmt.Println("###################################\n")
-						provenanceToPrint = true
-					}
+		readKindCompositionFile()
+		provenanceToPrint := false
+		resourceKindList := getResourceKinds()
+		for _, resourceKind := range resourceKindList {
+			resourceNameList := getResourceNames(resourceKind)
+			for _, resourceName := range resourceNameList {
+				provenanceNeeded := checkIfProvenanceNeeded(resourceKind, resourceName)
+				if provenanceNeeded {
+					fmt.Println("###################################")
+					fmt.Printf("Building Provenance for %s %s\n", resourceKind, resourceName)
+					level := 1
+					compositionTree := []CompositionTreeNode{}
+					buildProvenance(resourceKind, resourceName, level, &compositionTree)
+					storeProvenance(resourceKind, resourceName, &compositionTree)
+					fmt.Println("###################################\n")
+					provenanceToPrint = true
 				}
 			}
-			if provenanceToPrint {
-				printProvenance()
-			}
-			time.Sleep(time.Second * 5)
+		}
+		if provenanceToPrint {
+			printProvenance()
+		}
+		time.Sleep(time.Second * 5)
 	}
 }
 
@@ -136,11 +149,55 @@ func checkIfProvenanceNeeded(resourceKind, resourceName string) bool {
 	return true
 }
 
+func readKindCompositionFile() {
+	// read from the opt file
+    filePath := os.Getenv("KIND_COMPOSITION_FILE")
+    //filePath := "./kind_compositions.yaml"
+    yamlFile, err := ioutil.ReadFile(filePath)
+    if err != nil {
+    	fmt.Printf("Error reading file:%s", err)
+    }
+
+    compositionsList := make([]composition,0)
+    err = yaml.Unmarshal(yamlFile, &compositionsList)
+
+    for _, compositionObj := range compositionsList {
+    	kind := compositionObj.Kind
+    	endpoint := compositionObj.Endpoint
+    	composition := compositionObj.Composition
+    	plural := compositionObj.Plural
+    	//fmt.Printf("Kind:%s, Plural: %s Endpoint:%s, Composition:%s\n", kind, plural, endpoint, composition)
+
+    	kindPluralMap[kind] = plural
+    	kindVersionMap[kind] = endpoint
+    	compositionMap[kind] = composition
+    }
+    //printMaps()
+}
+
+func printMaps() {
+	fmt.Println("Printing kindVersionMap")
+	for key, value := range kindVersionMap {
+		fmt.Printf("%s, %s\n", key, value)
+	}
+	fmt.Println("Printing kindPluralMap")
+	for key, value := range kindPluralMap {
+		fmt.Printf("%s, %s\n", key, value)
+	}
+	fmt.Println("Printing compositionMap")
+	for key, value := range compositionMap {
+		fmt.Printf("%s, %s\n", key, value)
+	}
+}
+
 func getResourceKinds() []string {
 	resourceKindSlice := make([]string, 0)
-	resourceKindSlice = append(resourceKindSlice, ETCD_CLUSTER)
-	resourceKindSlice = append(resourceKindSlice, DEPLOYMENT)
-	resourceKindSlice = append(resourceKindSlice, CONFIG_MAP)
+//	resourceKindSlice = append(resourceKindSlice, ETCD_CLUSTER)
+//	resourceKindSlice = append(resourceKindSlice, DEPLOYMENT)
+//	resourceKindSlice = append(resourceKindSlice, CONFIG_MAP)
+	for key, _ := range compositionMap {
+		resourceKindSlice = append(resourceKindSlice, key)
+	}
 	return resourceKindSlice
 }
 
