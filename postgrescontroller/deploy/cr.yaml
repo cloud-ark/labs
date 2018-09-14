@@ -1,0 +1,4 @@
+apiVersion: "postgrescontroller.kubeplus/v1"
+kind: "Postgres"
+metadata:
+  name: "example"
