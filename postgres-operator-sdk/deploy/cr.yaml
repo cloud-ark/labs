@@ -1,0 +1,4 @@
+apiVersion: "postgres-operator-sdk.kubeplus/v1"
+kind: "Postgres"
+metadata:
+  name: "example"
