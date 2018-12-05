@@ -13,6 +13,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"labs/postgres-operator-sdk-new/pkg/apis/postgresoperatorsdknew/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
@@ -72,7 +73,7 @@ func Add(mgr manager.Manager) error {
 
 // newReconciler returns a new reconcile.Reconciler
 func newReconciler(mgr manager.Manager) reconcile.Reconciler {
-	return &ReconcilePostgres{client: mgr.GetClient(), scheme: mgr.GetScheme()}
+	return &ReconcilePostgres{client: mgr.GetClient(), scheme: mgr.GetScheme(), cache: mgr.GetCache()}
 }
 
 // add adds a new Controller to mgr with r as the reconcile.Reconciler
@@ -114,6 +115,7 @@ type ReconcilePostgres struct {
 	// that reads objects from the cache and writes to the apiserver
 	client client.Client
 	scheme *runtime.Scheme
+	cache cache.Cache
 }
 
 // Reconcile reads that state of the cluster for a Postgres object and makes changes based on the state read
@@ -441,6 +443,8 @@ func createDeployment (foo *postgresv1.Postgres, r *ReconcilePostgres) (string, 
 	nodePort1 := service.Spec.Ports[0].NodePort
 	nodePort := fmt.Sprint(nodePort1)
 	servicePort := nodePort
+
+	fmt.Print("THIS IS THE SERVICE PORT HERE: ", servicePort)
 
 	time.Sleep(time.Second * 5)
 

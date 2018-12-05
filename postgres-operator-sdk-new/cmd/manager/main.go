@@ -7,6 +7,7 @@ import (
 	"log"
 	"runtime"
 
+	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	sdkVersion "github.com/operator-framework/operator-sdk/version"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
@@ -24,6 +25,11 @@ func main() {
 	printVersion()
 	flag.Parse()
 
+	namespace, err := k8sutil.GetWatchNamespace()
+	if err != nil {
+		log.Fatalf("failed to get watch namespace: %v", err)
+	}
+
 	// Get a config to talk to the apiserver
 	cfg, err := config.GetConfig()
 	if err != nil {
@@ -31,7 +37,7 @@ func main() {
 	}
 
 	// Create a new Cmd to provide shared dependencies and start components
-	mgr, err := manager.New(cfg, manager.Options{Namespace: ""})
+	mgr, err := manager.New(cfg, manager.Options{Namespace: namespace})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,8 +48,7 @@ func main() {
 	if err := apis.AddToScheme(mgr.GetScheme()); err != nil {
 		log.Fatal(err)
 	}
-	
-	log.Print("After the error...\n")
+
 	// Setup all Controllers
 	if err := controller.AddToManager(mgr); err != nil {
 		log.Fatal(err)

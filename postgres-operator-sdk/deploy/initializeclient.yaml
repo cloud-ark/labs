@@ -1,4 +1,4 @@
-apiVersion: postgres-operator-sdk.kubeplus/v1
+apiVersion: postgresoperatorsdknew.kubeplus/v1
 kind: Postgres
 metadata:
   name: client25
