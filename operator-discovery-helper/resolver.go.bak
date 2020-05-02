@@ -1,0 +1,207 @@
+package main
+
+import (
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	apiextensionsclientset "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/typed/apiextensions/v1beta1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/tools/clientcmd"
+	"github.com/golang/glog"
+	"fmt"
+	"crypto/tls"
+	cert "crypto/x509"
+	"os"
+	"encoding/json"
+	"strings"
+	"net/http"
+	"net/url"
+	"io/ioutil"
+	"log"
+)
+
+type Resolver struct {
+    crdClient interface{}
+    nativeTypeClient interface{}
+}
+
+func NewResolver() *Resolver {
+
+	cfg, err := clientcmd.BuildConfigFromFlags("", "")
+	if err != nil {
+		glog.Fatalf("Error building kubeconfig: %s", err.Error())
+	}
+
+	kubeClient, err := kubernetes.NewForConfig(cfg)
+	if err != nil {
+		glog.Fatalf("Error building kubernetes clientset: %s", err.Error())
+	}
+
+	crdClient, err1 := apiextensionsclientset.NewForConfig(cfg)
+
+	if err1 != nil {
+		glog.Fatalf("Error building CRD clientset: %s", err1.Error())
+	}
+
+	resolver := new(Resolver)
+	resolver.nativeTypeClient = kubeClient
+	resolver.crdClient = crdClient
+
+	return resolver
+}
+
+func (r *Resolver) Resolve(namespace, resourceType, kind, attribute string) (string, error) {
+
+	var value string 
+	var err error
+	if resourceType == "CR" {
+		value, err = r.resolveCustomResource(namespace, kind, attribute)
+	} else {
+		fmt.Printf("Unrecognized resource type:%s", resourceType)
+	}
+
+	return value, err
+}
+
+func (r *Resolver) resolveCustomResource(namespace, kind, attribute string) (string, error) {
+	var value string
+
+	cfg, _ := clientcmd.BuildConfigFromFlags("", "")
+	crdClient, _ := apiextensionsclientset.NewForConfig(cfg)
+
+	crdList, err := crdClient.CustomResourceDefinitions().List(metav1.ListOptions{})
+	if err != nil {
+		fmt.Errorf("Error:%s\n", err)
+		return "", err
+	}
+	for _, crd := range crdList.Items {
+		crdName := crd.ObjectMeta.Name
+		crdObj, err := crdClient.CustomResourceDefinitions().Get(crdName, metav1.GetOptions{})
+		if err != nil {
+			fmt.Errorf("Error:%s\n", err)
+			return "", err
+		}
+		group := crdObj.Spec.Group
+		version := crdObj.Spec.Version
+		endpoint := "apis/" + group + "/" + version
+		kind1 := crdObj.Spec.Names.Kind
+		plural := crdObj.Spec.Names.Plural
+		fmt.Printf("Group:%s, Version:%s, Kind:%s, Plural:%s, Endpoint:%s\n", group, version, kind, plural, endpoint)
+
+		if kind1 == kind {
+			fmt.Printf("Kind1:%s, Kind:%s", kind1, kind)
+			value, err = getValue(endpoint, kind, plural, namespace, attribute)
+			if err != nil {
+				return "", err
+			}
+		}
+	}
+	return value, nil
+}
+
+func getValue(endpoint, kind, plural, namespace, attribute string) (string, error) {
+	content := queryAPIServer(endpoint, plural, namespace)
+	value := parseMetaData(content, attribute)
+	return value, nil
+}
+
+//Ref:https://www.sohamkamani.com/blog/2017/10/18/parsing-json-in-golang/#unstructured-data
+func parseMetaData(content []byte, attribute string) string {
+	//fmt.Println("Entering parseMetaData")
+	var value string
+	var result map[string]interface{}
+	json.Unmarshal([]byte(content), &result)
+	// We need to parse following from the result
+	// metadata.name
+	items, ok := result["items"].([]interface{})
+
+	if ok {
+		for _, item := range items {
+			//fmt.Println("=======================")
+			itemConverted := item.(map[string]interface{})
+			for key, value := range itemConverted {
+				if key == "metadata" {
+					//fmt.Println("----")
+					//fmt.Println(key, value.(interface{}))
+					metadataMap := value.(map[string]interface{})
+					for mkey, mvalue := range metadataMap {
+						//fmt.Printf("%v ==> %v\n", mkey, mvalue.(interface{}))
+						if mkey == attribute {
+							value = mvalue.(string)
+						}
+					}
+				}
+			}
+		}
+	}
+	return value
+}
+
+
+func queryAPIServer(resourceApiVersion, resourcePlural, namespace string) []byte {
+
+	serviceHost := os.Getenv("KUBERNETES_SERVICE_HOST")
+	servicePort := os.Getenv("KUBERNETES_SERVICE_PORT")
+	httpMethod := http.MethodGet
+
+	var url1 string
+	if !strings.Contains(resourceApiVersion, resourcePlural) {
+		url1 = fmt.Sprintf("https://%s:%s/%s/namespaces/%s/%s", serviceHost, servicePort, resourceApiVersion, namespace, resourcePlural)
+	} else {
+		url1 = fmt.Sprintf("https://%s:%s/%s", serviceHost, servicePort, resourceApiVersion)
+	}
+	fmt.Printf("Url:%s\n",url1)
+	caToken := getToken()
+	caCertPool := getCACert()
+	u, err := url.Parse(url1)
+	if err != nil {
+		panic(err)
+	}
+	req, err := http.NewRequest(httpMethod, u.String(), nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", string(caToken)))
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				RootCAs: caCertPool,
+			},
+		},
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Printf("sending request failed: %s", err.Error())
+		fmt.Println(err)
+	}
+	defer resp.Body.Close()
+	resp_body, _ := ioutil.ReadAll(resp.Body)
+
+	//fmt.Println(resp.Status)
+	//fmt.Println(string(resp_body))
+	//fmt.Println("Exiting queryAPIServer")
+	return resp_body
+}
+
+// Ref:https://stackoverflow.com/questions/30690186/how-do-i-access-the-kubernetes-api-from-within-a-pod-container
+func getToken() []byte {
+	caToken, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/token")
+	if err != nil {
+		panic(err) // cannot find token file
+	}
+	//fmt.Printf("Token:%s", caToken)
+	return caToken
+}
+
+// Ref:https://stackoverflow.com/questions/30690186/how-do-i-access-the-kubernetes-api-from-within-a-pod-container
+func getCACert() *cert.CertPool {
+	caCertPool := cert.NewCertPool()
+	caCert, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
+	if err != nil {
+		panic(err) // Can't find cert file
+	}
+	//fmt.Printf("CaCert:%s",caCert)
+	caCertPool.AppendCertsFromPEM(caCert)
+	return caCertPool
+}
+
+
