@@ -1,0 +1,3 @@
+apiVersion: postgres-operator-sdk.kubeplus/v1
+kind: Postgres
+projectName: postgres-operator-sdk

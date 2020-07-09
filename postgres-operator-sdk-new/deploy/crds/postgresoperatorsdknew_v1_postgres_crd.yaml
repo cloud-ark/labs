@@ -1,0 +1,13 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: postgres.postgresoperatorsdknew.kubeplus
+spec:
+  group: postgresoperatorsdknew.kubeplus
+  names:
+    kind: Postgres
+    listKind: PostgresList
+    plural: postgres
+    singular: postgres
+  scope: Namespaced
+  version: v1
